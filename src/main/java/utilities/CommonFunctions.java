@@ -122,5 +122,23 @@ public class CommonFunctions {
 		}
 		return value;
 	}
+	public String readJSONData(String parentObj, int objIndex, String Key) throws IOException, ParseException {
+		
+		File f = new File("/test-automation-ui/src/test/resources/input_data/data.json");
+		FileReader reader = new FileReader(f);
+
+		JSONParser parser = new JSONParser();
+		JSONObject obj = (JSONObject) parser.parse(reader);
+		String value = "";
+		if (obj.containsKey(parentObj)) {
+			JSONArray arr = (JSONArray) obj.get(parentObj);
+			JSONObject credobj = (JSONObject) arr.get(objIndex-1);
+			String jsonvalue = (String) credobj.get(Key);
+			value = value.concat(jsonvalue);
+		}
+		else {
+			System.out.println("The Parent Object is not available in the JSON file");
+		}
+		return value;
 
 }

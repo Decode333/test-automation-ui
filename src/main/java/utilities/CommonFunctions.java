@@ -2,6 +2,7 @@ package utilities;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -13,9 +14,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -24,7 +23,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.google.common.collect.Table.Cell;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class CommonFunctions {
 	
@@ -84,9 +86,10 @@ public class CommonFunctions {
 
 	}
 	
-	public static void waitForVisibility(String element) {
+	public static WebElement waitForVisibility(String element) {
 		new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.presenceOfElementLocated(element));
+        WebElement ele =  wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(element)));
+        return ele;
     }
 	
 	public static void closeBrowser() throws InterruptedException{
@@ -122,23 +125,25 @@ public class CommonFunctions {
 		}
 		return value;
 	}
-	public String readJSONData(String parentObj, int objIndex, String Key) throws IOException, ParseException {
+	public StringBuffer readJSONData(String parentObj, int objIndex, String Key) throws IOException, ParseException {
 		
 		File f = new File("/test-automation-ui/src/test/resources/input_data/data.json");
 		FileReader reader = new FileReader(f);
 
 		JSONParser parser = new JSONParser();
 		JSONObject obj = (JSONObject) parser.parse(reader);
-		String value = "";
+
+		StringBuffer value = new StringBuffer("");
 		if (obj.containsKey(parentObj)) {
 			JSONArray arr = (JSONArray) obj.get(parentObj);
 			JSONObject credobj = (JSONObject) arr.get(objIndex-1);
 			String jsonvalue = (String) credobj.get(Key);
-			value = value.concat(jsonvalue);
+			value.append(jsonvalue);
 		}
 		else {
-			System.out.println("The Parent Object is not available in the JSON file");
+			System.out.println("The Parent Object \""+parentObj+"\" is not available in the JSON file");
 		}
 		return value;
+	}
 
 }

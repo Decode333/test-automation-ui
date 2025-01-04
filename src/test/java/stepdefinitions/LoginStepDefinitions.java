@@ -5,6 +5,8 @@ import pages.DashBoard;
 import pages.Login;
 import utilities.CommonFunctions;
 
+import java.io.IOException;
+
 import org.openqa.selenium.WebElement;
 
 public class LoginStepDefinitions {
@@ -14,7 +16,7 @@ public class LoginStepDefinitions {
     
 
     @Given("I navigate to the OrangeHRM login page {string}")
-    public void navigate_to_login_page(String url) {
+    public void navigate_to_login_page(String url) throws IOException {
     	
     	CommonFunctions.launchBrowser();
     	CommonFunctions.launchUrl(url);

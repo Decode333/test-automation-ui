@@ -19,6 +19,7 @@ public class TestRunner {
 	
 	@AfterClass
 	public static void afterClass() throws InterruptedException{
+//		Thread.sleep(3000);
 		CommonFunctions.closeBrowser();
 	}
 	

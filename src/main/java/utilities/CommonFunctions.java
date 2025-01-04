@@ -2,12 +2,14 @@ package utilities;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,6 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -33,13 +36,45 @@ public class CommonFunctions {
 	public static WebDriver driver;
 	public static WebDriverWait wait;
 	
-	public static void launchBrowser() {
-		driver = new ChromeDriver();
-		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
+	public static void launchBrowser() throws IOException {
+		String browser = getConfigProperty("browser");
+		
+		switch (browser.toLowerCase()) {
+		case "chrome":
+			driver = new ChromeDriver();
+			
+			break;
+		case "edge":
+			driver = new EdgeDriver();
+
+			break;
+
+		default:
+			System.out.println("Enter Valid browser!!!");
+			System.exit(0);
+			break;
+		}
+		
 	}
 	public static void launchUrl(String url) {
+		
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
 		driver.get(url);
+	}
+	
+	public static String getConfigProperty(String property) throws IOException {
+		
+		File file = new File("C:\\Users\\NITHIN RAJ E\\eclipse-workspace\\test-automation-ui\\src\\main\\resources\\Config.properties");
+		FileInputStream input = new FileInputStream(file);
+		
+		Properties pro = new Properties();
+		
+		pro.load(input);
+		
+		System.out.println(pro.get(property));
+		
+		return pro.getProperty(property);
 	}
 	
 	public static WebElement locateElement(String locator, String value) {
